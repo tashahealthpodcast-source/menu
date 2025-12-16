@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔莎健康室 Tasha's Wellness</title>
+    
+    <!-- 1. 引入 Tailwind CSS (樣式庫) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. 引入 React 和 ReactDOM (核心框架) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- 3. 引入 Babel (讓瀏覽器看懂 React 程式碼) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 定義自訂樣式 -->
+    <style>
+        body {
+            background-color: #E7E5E4; /* stone-200 */
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        /* 訂製滾動條，讓網頁在不同分頁切換時，滾動條不那麼突兀 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #d6d3cd;
+            border-radius: 20px;
+        }
+        /* 淡入動畫 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- 圖示組件 (SVG Icons) ---
+        // 為了讓單一檔案運作，我們直接將圖示定義在這裡，不依賴外部模組
+        const Leaf = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
+        const Clock = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+        const Calendar = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
+        const Star = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+        const MapPin = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>;
+        const Phone = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
+        const ChevronDown = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m6 9 6 6 6-6"/></svg>;
+        const ChevronUp = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m18 15-6-6-6 6"/></svg>;
+        const Share2 = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>;
+        const CheckCircle = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>;
+        const Users = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+        const Lightbulb = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 14c.2-1 .9-1.33 1.33-2-.02.2-.23.6-.5 1"/><path d="M9 18h6"/><path d="M10 20.2V21h4v-.8"/><path d="M10 14h4"/><path d="M14 14v1a1 1 0 0 1-2 0v-1h-2a1 1 0 0 1-1-1V9a5 5 0 0 1 10 0v4a1 1 0 0 1-1 1h-2Z"/></svg>;
+        const Zap = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+        
+        // LINE Logo SVG (簡化版)
+        const LineIcon = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" {...props}><path d="M11.96 2A10 10 0 0 0 2 12c0 5.52 4.48 10 10 10a9.92 9.92 0 0 0 5.6-1.74l3.59 1.48c.55.23 1.15-.22 1.15-.8v-4.66A9.92 9.92 0 0 0 22 12c0-5.52-4.48-10-10-10zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/><circle cx="12" cy="11.96" r="4"/></svg>;
+        
+        // Instagram Icon
+        const InstagramIcon = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
+        
+        // Facebook Icon
+        const FacebookIcon = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" {...props}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
+
+
+        // --- 主應用程式 ---
+        const TashaWellnessCard = () => {
+          // 更新導航標籤
+          const [activeTab, setActiveTab] = useState('home');
+          const [expandedFaq, setExpandedFaq] = useState(null);
+
+          // 服務項目 (維持不變)
+          const services = [
+            { name: "耳絡保養方案", time: "60 min", price: "$1,800", desc: "結合耳穴保健、頭顱撥筋、PBM光療達到良好健康促進效果。" },
+            { name: "臉耳保養方案", time: "90 min", price: "$2,500", desc: "耳絡保養加上古法全顱撥筋，健康與美麗可以兼具。" },
+            { name: "窈窕方案", time: "試營運", price: "$1,000", desc: "低能量雷射集中照射腹部30分鐘、耳穴貼壓、基礎運動指導加上一週的飲食陪跑，讓你不瘦也難。" }
+          ];
+
+          // 常見問題 (已更新)
+          const faqs = [
+            { q: "第一次來，需要準備什麼？", a: "建議穿著寬鬆舒適的衣物，若您不確定該選擇什麼方案當天塔莎會根據您的身體狀況，客製化您的需求。" },
+            { q: "服務需要多久時間", a: "依據不同服務項目，時間從60分鐘到90分鐘不等。建議預留前後各15分鐘的緩衝時間，以確保服務品質。" },
+            { q: "可以使用什麼付款方式？", a: "目前接受現金、轉帳與LINE PAY。" },
+            { q: "服務效果能維持多久？", a: "效果因個人體質與生活習慣而異。建議定期施做，配合專業建議調整生活作息，可達到更長期的健康維護效果。" },
+            { q: "適合所有年齡層嗎？", a: "我們的服務適合18歲以上成年人，若要為未成年人預約需先私訊，當天監護人必須陪同。" }
+          ];
+
+
+          const renderContent = () => {
+            switch (activeTab) {
+              case 'home':
+                return (
+                  <div className="space-y-6 animate-fadeIn">
+                    <div className="text-center space-y-3 py-4">
+                      <div className="inline-flex items-center justify-center p-3 bg-stone-100 rounded-full mb-2">
+                        <Leaf className="w-8 h-8 text-[#8A9A5B]" />
+                      </div>
+                      <h2 className="text-xl font-medium text-stone-800 tracking-wide">從內而外，綻放健康光彩</h2>
+                      <p className="text-stone-600 text-sm leading-relaxed px-4">
+                        歡迎來到塔莎健康室。<br/>
+                        這裡提供一對一的客製化身心調理，<br/>
+                        讓您在溫潤米色的空間裡，找回平靜。
+                      </p>
+                    </div>
+                    
+                    {/* Tasha 介紹 (新增) */}
+                    <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mx-2">
+                        <h3 className="text-sm font-semibold text-[#8A9A5B] mb-2 border-b border-dashed pb-1">【Tasha塔莎】介紹</h3>
+                        <p className="text-stone-600 text-sm leading-relaxed text-justify">
+                            我是一位護理師與糖尿病衛教師，因為對健康推廣有極大熱誠，花許多時間進修營養保健、中醫養生、耳穴保健，想成為每個家庭最信任的健康夥伴。
+                        </p>
+                    </div>
+
+                    {/* 已移除營業狀態與本月優惠區塊 */}
+
+                    {/* 預約連結與 LINE 聯繫 (維持不變) */}
+                    <div className="bg-[#EFECE6] p-5 rounded-2xl mx-1 mt-6 space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-[#8A9A5B]" />
+                        <h3 className="font-medium text-stone-700">立即預約 / 連絡我們</h3>
+                      </div>
+                      
+                      {/* 預約連結 */}
+                      <a 
+                        href="https://cal.com/tashahealth/zh" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-full bg-[#8A9A5B] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#76844d] transition-colors shadow-md"
+                      >
+                        <Calendar className="w-4 h-4" />
+                        【預約連結】
+                      </a>
+
+                      {/* 官方 LINE */}
+                      <a 
+                        href="https://lin.ee/zG7bpbM" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-full bg-[#00B900] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#009900] transition-colors shadow-md"
+                      >
+                        <LineIcon className="w-4 h-4" />
+                        官方LINE (有疑問請私訊)
+                      </a>
+
+                      {/* 社群連結區塊 (並排顯示) */}
+                      <div className="flex gap-3">
+                          {/* Instagram */}
+                          <a 
+                            href="https://www.instagram.com/tasha.health/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="flex-1 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-md"
+                          >
+                            <InstagramIcon className="w-4 h-4" />
+                            Instagram
+                          </a>
+
+                          {/* Facebook */}
+                          <a 
+                            href="https://www.facebook.com/tashalohealth/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="flex-1 bg-[#1877F2] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#166fe5] transition-colors shadow-md"
+                          >
+                            <FacebookIcon className="w-4 h-4 fill-white" />
+                            Facebook
+                          </a>
+                      </div>
+                    </div>
+                  </div>
+                );
+
+              case 'services':
+                // 服務項目 (維持不變)
+                return (
+                  <div className="space-y-4 animate-fadeIn px-1">
+                    <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">SERVICE MENU</h3>
+                    {services.map((item, index) => (
+                      <div key={index} className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 group hover:border-[#8A9A5B]/30 transition-all">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-medium text-stone-800 text-lg">{item.name}</h4>
+                          <span className="text-[#8A9A5B] font-bold">
+                            {item.price}
+                            {item.time !== '試營運' ? '元' : ''} 
+                            {item.time === '試營運' ? <span className="text-xs text-stone-500 ml-1"> ({item.time})</span> : ''}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-stone-400 mb-2">
+                          <Clock className="w-3 h-3" />
+                          <span>{item.time}</span>
+                        </div>
+                        <p className="text-stone-600 text-sm leading-relaxed text-justify">
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))}
+
+                    {/* 新增：費用方案區塊 */}
+                    <div className="bg-[#FAF0E6] p-5 rounded-xl border border-[#E6D0B3] mt-6 shadow-sm">
+                        <h4 className="font-medium text-[#B59678] mb-3 text-lg flex items-center gap-2">
+                            <Star className="w-5 h-5 fill-current" />
+                            費用方案
+                        </h4>
+                        <ul className="space-y-3 text-sm text-stone-700">
+                            <li className="flex items-start gap-2">
+                                <span className="text-[#8A9A5B] font-bold flex-shrink-0">✓</span> 首次來店85折
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-[#8A9A5B] font-bold flex-shrink-0">✓</span> 來店皆贈送小禮物
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-[#8A9A5B] font-bold flex-shrink-0">✓</span> 儲值2萬贈送2千
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-[#8A9A5B] font-bold flex-shrink-0">✓</span> 儲值3萬贈送5千
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-[#8A9A5B] font-bold flex-shrink-0">✓</span> 轉介朋友來店消費可得300元折價卷
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="text-center text-xs text-stone-400 mt-6 pt-4 border-t border-dashed border-stone-300">
+                      * 所有課程皆包含課前諮詢與課後茶點
+                    </div>
+                  </div>
+                );
+
+              case 'bojin':
+                // 頭顱撥筋 (新增分頁)
+                return (
+                    <div className="space-y-5 animate-fadeIn px-1">
+                        <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">頭顱撥筋 (Head Scraping)</h3>
+                        
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                            <h4 className="font-medium text-[#8A9A5B] mb-2 text-lg">什麼是頭顱撥筋？</h4>
+                            <p className="text-stone-600 text-sm leading-relaxed text-justify mb-3">
+                                頭顱撥筋是一種傳統的中醫養生技法，透過特定的手法作用於頭部經絡穴位，幫助疏通氣血、放鬆筋膜。
+                            </p>
+                            <p className="text-stone-600 text-sm leading-relaxed text-justify">
+                                現代人長期使用3C產品、工作壓力大，容易造成頭部肌肉緊繃、氣血循環不良。頭顱撥筋能有效改善這些問題，讓您感受到深層的放鬆。
+                            </p>
+                        </div>
+
+                        <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20">
+                            <h4 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
+                                <Leaf className="w-5 h-5 fill-current" />
+                                頭顱撥筋的益處
+                            </h4>
+                            <ul className="space-y-2 text-sm text-stone-700">
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 放鬆頭部肌肉，緩解緊繃感</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 促進頭部氣血循環</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 幫助舒緩壓力，提升睡眠品質</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 改善頭部循環，帶來清爽感受</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 配合臉部撥筋，養顏美容效果更佳</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                            <h4 className="font-medium text-stone-800 mb-3 flex items-center gap-2">
+                                <Users className="w-4 h-4 text-[#B59678]" />
+                                適合對象
+                            </h4>
+                            <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#B59678]">
+                                <li>長期使用電腦、手機的上班族</li>
+                                <li>經常感到頭部緊繃或壓力大的人</li>
+                                <li>想要改善睡眠品質的人</li>
+                                <li>追求身心放鬆與健康養生的人</li>
+                            </ul>
+                        </div>
+                    </div>
+                );
+
+              case 'pbm':
+                // PBM 光療 (新增分頁)
+                return (
+                    <div className="space-y-5 animate-fadeIn px-1">
+                        <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">PBM光生物調節療法</h3>
+                        
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                            <h4 className="font-medium text-[#8A9A5B] mb-2 text-lg">什麼是 PBM？</h4>
+                            <p className="text-stone-600 text-sm leading-relaxed text-justify">
+                                PBM (Photobiomodulation) 光生物調節療法，又稱為低能量雷射療法或紅光療法，是一種利用特定波長的光線促進細胞功能的非侵入性技術。
+                            </p>
+                        </div>
+                        
+                        <div className="bg-[#EFECE6] p-4 rounded-xl border border-stone-300">
+                            <h4 className="font-medium text-stone-800 mb-2 flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-red-500 fill-red-200" />
+                                PBM 的作用原理
+                            </h4>
+                            <p className="text-stone-600 text-sm leading-relaxed text-justify mb-3">
+                                PBM 透過特定波長的光線（通常是紅光或近紅外光）照射身體組織，這些光能可以被細胞吸收，進而啟動一系列的生理反應，促進細胞代謝與修復。
+                            </p>
+                            <ul className="space-y-1 text-sm text-stone-700 list-disc list-inside marker:text-red-500 ml-2">
+                                <li>光能會被細胞中的**【線粒體】**吸收，增加 ATP（細胞能量）的產生。</li>
+                                <li>細胞代謝活動提升</li>
+                                <li>血液循環改善</li>
+                                <li>組織修復加速</li>
+                                <li>發炎反應調節</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20">
+                            <h4 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
+                                <CheckCircle className="w-5 h-5 fill-current" />
+                                PBM 的應用與益處
+                            </h4>
+                            <ul className="space-y-2 text-sm text-stone-700">
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 促進新陳代謝，幫助體態管理</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 改善局部循環</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 促進肌膚健康，提升氣色</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 舒緩肌肉緊繃感</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 非侵入性、無副作用、無恢復期</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                            <h4 className="font-medium text-stone-800 mb-3 flex items-center gap-2">
+                                <Lightbulb className="w-4 h-4 text-[#B59678]" />
+                                安全性與科學驗證
+                            </h4>
+                            <p className="text-stone-600 text-sm leading-relaxed text-justify mb-3">
+                                PBM 技術已經過多年的臨床研究驗證，在歐美國家廣泛應用於醫療保健領域。它是一種安全、無痛、非侵入性的療法，無需恢復期，適合作為日常保養的一部分。
+                            </p>
+                            <p className="text-xs text-stone-500 italic flex items-start gap-1">
+                                <span className="text-[#8A9A5B] font-bold text-sm">💡</span>
+                                在塔莎健康室，我們將 PBM 技術結合傳統養生手法，為您提供更全面的健康照護體驗。
+                            </p>
+                        </div>
+                    </div>
+                );
+
+              case 'booking':
+                // 預約須知 (維持不變)
+                return (
+                  <div className="space-y-5 animate-fadeIn px-1">
+                    
+                    {/* 預約方式與營業時間 (維持不變) */}
+                    <div className="bg-white p-5 rounded-xl shadow-sm space-y-4">
+                      <div className="flex items-start gap-3">
+                        <Calendar className="w-5 h-5 text-stone-400 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-stone-800 text-sm">預約方式</h4>
+                          <p className="text-stone-600 text-sm mt-1">
+                            以 <a href="https://cal.com/tashahealth/zh" target="_blank" rel="noopener noreferrer" className="text-[#8A9A5B] underline">網址預約</a> 為主，有疑問請從 IG 或 <a href="https://lin.ee/zG7bpbM" target="_blank" rel="noopener noreferrer" className="text-[#00B900] underline">官方LINE</a> 私訊。
+                          </p>
+                        </div>
+                      </div>
+                      <hr className="border-stone-100" />
+                      <div className="flex items-start gap-3">
+                        <Clock className="w-5 h-5 text-stone-400 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-stone-800 text-sm">營業時間</h4>
+                          <p className="text-stone-600 text-sm mt-1">
+                            已預約網址顯示為主（請點選預約連結確認）。
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* 改期／取消政策 (維持不變) */}
+                    <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20">
+                      <h3 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
+                        <Star className="w-4 h-4 fill-current" />
+                        【改期／取消政策】<span className="text-xs font-normal text-stone-500 ml-2">(試營運期間不收訂金)</span>
+                      </h3>
+                      <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#8A9A5B]">
+                        <li><strong>5天前</strong> 可免費取消。</li>
+                        <li><strong>48 小時內</strong> 可改期但不可退訂金。</li>
+                        <li><strong>24 小時內</strong> 取消或改期，只能保留一半訂金。</li>
+                      </ul>
+                    </div>
+
+                    {/* 注意事項 (維持不變) */}
+                    <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                      <h3 className="font-medium text-stone-800 mb-3 text-sm">注意事項</h3>
+                      <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#B59678]">
+                          <li>請準時抵達，遲到可能會影響施作時間。</li>
+                          <li>請穿著寬鬆舒適的衣物。</li>
+                          <li>懷孕請勿預約。</li>
+                      </ul>
+                    </div>
+                  </div>
+                );
+
+              case 'faq':
+                // 常見問題 (已更新 Q&A 並增加頁尾文字)
+                return (
+                  <div className="space-y-3 animate-fadeIn px-1">
+                    <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">Q & A</h3>
+                    {faqs.map((faq, index) => (
+                      <div key={index} className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
+                        <button 
+                          onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                          className="w-full flex justify-between items-center p-4 text-left hover:bg-stone-50 transition-colors"
+                        >
+                          <span className="font-medium text-stone-800 text-sm pr-4">Q. {faq.q}</span>
+                          {expandedFaq === index ? <ChevronUp className="w-4 h-4 text-stone-400" /> : <ChevronDown className="w-4 h-4 text-stone-400" />}
+                        </button>
+                        {expandedFaq === index && (
+                          <div className="px-4 pb-4 pt-0 text-sm text-stone-600 leading-relaxed bg-stone-50/50">
+                            <div className="h-px w-full bg-stone-100 mb-3"></div>
+                            {faq.a}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {/* 頁尾文字 (新增) */}
+                    <div className="text-center text-sm text-stone-600 mt-8 pt-4 border-t border-dashed border-stone-300">
+                        <p className="font-medium mb-1">還有其他問題嗎？</p>
+                        <p>歡迎直接聯繫我們，我們很樂意為您解答！</p>
+                    </div>
+                  </div>
+                );
+              default:
+                return null;
+            }
+          };
+
+          return (
+            <div className="min-h-screen bg-stone-200 flex items-center justify-center p-4 font-sans">
+              <div className="w-full max-w-md bg-[#FAF8F3] rounded-[2rem] shadow-2xl overflow-hidden relative min-h-[700px] flex flex-col">
+                
+                {/* Header */}
+                <div className="bg-[#FAF8F3] pt-8 pb-4 px-6 sticky top-0 z-10 border-b border-stone-100/50">
+                  <div className="flex justify-between items-center mb-4">
+                     <div className="flex flex-col">
+                        <h1 className="text-2xl font-serif text-stone-800 tracking-wide font-bold">塔莎健康室</h1>
+                        <span className="text-[0.65rem] text-[#8A9A5B] tracking-[0.2em] uppercase font-medium">Tasha's Wellness</span>
+                     </div>
+                     <button className="text-stone-400 hover:text-stone-600" title="分享">
+                       <Share2 className="w-5 h-5" />
+                     </button>
+                  </div>
+                  
+                  {/* Tabs (已更新) */}
+                  <div className="flex bg-stone-200/50 p-1 rounded-xl overflow-x-auto whitespace-nowrap">
+                    {['home', 'booking', 'services', 'bojin', 'pbm', 'faq'].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`flex-shrink-0 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-300 ${
+                          activeTab === tab 
+                            ? 'bg-white text-[#8A9A5B] shadow-sm' 
+                            : 'text-stone-500 hover:text-stone-700'
+                        }`}
+                      >
+                        {tab === 'home' && '首頁'}
+                        {tab === 'booking' && '預約須知'}
+                        {tab === 'services' && '服務項目'}
+                        {tab === 'bojin' && '頭顱撥筋'}
+                        {tab === 'pbm' && 'PBM光療'}
+                        {tab === 'faq' && '常見問題'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-5 pb-20 custom-scrollbar">
+                  {renderContent()}
+                </div>
+
+                {/* Footer Gradient */}
+                <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#EFECE6] to-transparent h-12 pointer-events-none"></div>
+
+              </div>
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TashaWellnessCard />);
+    </script>
+</body>
+</html>
