@@ -94,7 +94,7 @@
             { name: "窈窕方案", time: "試營運", price: "$1,000", desc: "低能量雷射集中照射腹部30分鐘、耳穴貼壓、基礎運動指導加上一週的飲食陪跑，讓你不瘦也難。" }
           ];
 
-          // 常見問題 (已更新)
+          // 常見問題 (維持不變)
           const faqs = [
             { q: "第一次來，需要準備什麼？", a: "建議穿著寬鬆舒適的衣物，若您不確定該選擇什麼方案當天塔莎會根據您的身體狀況，客製化您的需求。" },
             { q: "服務需要多久時間", a: "依據不同服務項目，時間從60分鐘到90分鐘不等。建議預留前後各15分鐘的緩衝時間，以確保服務品質。" },
@@ -121,7 +121,7 @@
                       </p>
                     </div>
                     
-                    {/* Tasha 介紹 (新增) */}
+                    {/* Tasha 介紹 */}
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mx-2">
                         <h3 className="text-sm font-semibold text-[#8A9A5B] mb-2 border-b border-dashed pb-1">【Tasha塔莎】介紹</h3>
                         <p className="text-stone-600 text-sm leading-relaxed text-justify">
@@ -129,9 +129,7 @@
                         </p>
                     </div>
 
-                    {/* 已移除營業狀態與本月優惠區塊 */}
-
-                    {/* 預約連結與 LINE 聯繫 (維持不變) */}
+                    {/* 預約連結與 LINE 聯繫 */}
                     <div className="bg-[#EFECE6] p-5 rounded-2xl mx-1 mt-6 space-y-4">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-[#8A9A5B]" />
@@ -189,7 +187,7 @@
                 );
 
               case 'services':
-                // 服務項目 (維持不變)
+                // 服務項目 (整合 頭顱撥筋 & PBM)
                 return (
                   <div className="space-y-4 animate-fadeIn px-1">
                     <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">SERVICE MENU</h3>
@@ -213,7 +211,7 @@
                       </div>
                     ))}
 
-                    {/* 新增：費用方案區塊 */}
+                    {/* 費用方案區塊 */}
                     <div className="bg-[#FAF0E6] p-5 rounded-xl border border-[#E6D0B3] mt-6 shadow-sm">
                         <h4 className="font-medium text-[#B59678] mb-3 text-lg flex items-center gap-2">
                             <Star className="w-5 h-5 fill-current" />
@@ -238,16 +236,8 @@
                         </ul>
                     </div>
 
-                    <div className="text-center text-xs text-stone-400 mt-6 pt-4 border-t border-dashed border-stone-300">
-                      * 所有課程皆包含課前諮詢與課後茶點
-                    </div>
-                  </div>
-                );
-
-              case 'bojin':
-                // 頭顱撥筋 (新增分頁)
-                return (
-                    <div className="space-y-5 animate-fadeIn px-1">
+                    {/* ================= 頭顱撥筋詳細介紹 (整合至此) ================= */}
+                    <div className="mt-8 pt-6 border-t border-stone-200">
                         <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">頭顱撥筋 (Head Scraping)</h3>
                         
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
@@ -260,7 +250,7 @@
                             </p>
                         </div>
 
-                        <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20">
+                        <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20 mt-4">
                             <h4 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
                                 <Leaf className="w-5 h-5 fill-current" />
                                 頭顱撥筋的益處
@@ -274,7 +264,7 @@
                             </ul>
                         </div>
 
-                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mt-4">
                             <h4 className="font-medium text-stone-800 mb-3 flex items-center gap-2">
                                 <Users className="w-4 h-4 text-[#B59678]" />
                                 適合對象
@@ -287,12 +277,9 @@
                             </ul>
                         </div>
                     </div>
-                );
 
-              case 'pbm':
-                // PBM 光療 (新增分頁)
-                return (
-                    <div className="space-y-5 animate-fadeIn px-1">
+                    {/* ================= PBM光療詳細介紹 (整合至此) ================= */}
+                    <div className="mt-8 pt-6 border-t border-stone-200">
                         <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">PBM光生物調節療法</h3>
                         
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
@@ -302,7 +289,7 @@
                             </p>
                         </div>
                         
-                        <div className="bg-[#EFECE6] p-4 rounded-xl border border-stone-300">
+                        <div className="bg-[#EFECE6] p-4 rounded-xl border border-stone-300 mt-4">
                             <h4 className="font-medium text-stone-800 mb-2 flex items-center gap-2">
                                 <Zap className="w-5 h-5 text-red-500 fill-red-200" />
                                 PBM 的作用原理
@@ -319,7 +306,7 @@
                             </ul>
                         </div>
 
-                        <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20">
+                        <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20 mt-4">
                             <h4 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
                                 <CheckCircle className="w-5 h-5 fill-current" />
                                 PBM 的應用與益處
@@ -333,7 +320,7 @@
                             </ul>
                         </div>
 
-                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mt-4">
                             <h4 className="font-medium text-stone-800 mb-3 flex items-center gap-2">
                                 <Lightbulb className="w-4 h-4 text-[#B59678]" />
                                 安全性與科學驗證
@@ -347,6 +334,12 @@
                             </p>
                         </div>
                     </div>
+
+
+                    <div className="text-center text-xs text-stone-400 mt-6 pt-4 border-t border-dashed border-stone-300">
+                      * 所有課程皆包含課前諮詢與課後茶點
+                    </div>
+                  </div>
                 );
 
               case 'booking':
@@ -403,7 +396,7 @@
                 );
 
               case 'faq':
-                // 常見問題 (已更新 Q&A 並增加頁尾文字)
+                // 常見問題 (維持不變)
                 return (
                   <div className="space-y-3 animate-fadeIn px-1">
                     <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">Q & A</h3>
@@ -424,7 +417,6 @@
                         )}
                       </div>
                     ))}
-                    {/* 頁尾文字 (新增) */}
                     <div className="text-center text-sm text-stone-600 mt-8 pt-4 border-t border-dashed border-stone-300">
                         <p className="font-medium mb-1">還有其他問題嗎？</p>
                         <p>歡迎直接聯繫我們，我們很樂意為您解答！</p>
@@ -452,9 +444,9 @@
                      </button>
                   </div>
                   
-                  {/* Tabs (已更新) */}
+                  {/* Tabs (已簡化) */}
                   <div className="flex bg-stone-200/50 p-1 rounded-xl overflow-x-auto whitespace-nowrap">
-                    {['home', 'booking', 'services', 'bojin', 'pbm', 'faq'].map((tab) => (
+                    {['home', 'booking', 'services', 'faq'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -467,8 +459,6 @@
                         {tab === 'home' && '首頁'}
                         {tab === 'booking' && '預約須知'}
                         {tab === 'services' && '服務項目'}
-                        {tab === 'bojin' && '頭顱撥筋'}
-                        {tab === 'pbm' && 'PBM光療'}
                         {tab === 'faq' && '常見問題'}
                       </button>
                     ))}
@@ -493,5 +483,3 @@
     </script>
 </body>
 </html>
-
-
