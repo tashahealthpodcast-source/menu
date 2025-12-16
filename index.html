@@ -11,7 +11,7 @@
     <meta property="og:title" content="Tasha 撥筋調理 | 南勢角專屬預約" />
     <meta property="og:description" content="別讓痠痛累積！就在南勢角捷運站對面，專屬的一對一深層撥筋體驗，點擊查看詳情。" />
 
-    <!-- 1. 引入 Tailwind CSS (樣式庫) -->耳穴
+    <!-- 1. 引入 Tailwind CSS (樣式庫) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- 2. 引入 React 和 ReactDOM (核心框架) -->
@@ -126,6 +126,7 @@
                         <h3 className="font-medium text-stone-700">立即預約 / 連絡我們</h3>
                       </div>
                       
+                      {/* 預約連結 */}
                       <a 
                         href="https://cal.com/tashahealth/zh" 
                         target="_blank" 
@@ -136,6 +137,7 @@
                         【預約連結】
                       </a>
 
+                      {/* 官方 LINE */}
                       <a 
                         href="https://lin.ee/zG7bpbM" 
                         target="_blank" 
@@ -219,7 +221,7 @@
                         </ul>
                     </div>
 
-                    {/* ================= 耳穴保健詳細介紹 (無圖片) ================= */}
+                    {/* ================= 耳穴保健詳細介紹 ================= */}
                     <div className="mt-8 pt-6 border-t border-stone-200">
                         <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">耳穴保健 (Auricular Therapy)</h3>
 
@@ -245,10 +247,19 @@
                                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 改善肩頸痠痛與氣結</li>
                                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 提升身體自我修復能力</li>
                             </ul>
+                            
+                            {/* 耳穴圖片 */}
+                            <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
+                                <img 
+                                    src="./image_4a867a.jpg" 
+                                    alt="耳穴保健示意圖" 
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    {/* ================= 頭顱撥筋詳細介紹 (無圖片) ================= */}
+                    {/* ================= 頭顱撥筋詳細介紹 ================= */}
                     <div className="mt-8 pt-6 border-t border-stone-200">
                         <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">頭顱撥筋 (Head Scraping)</h3>
                         
@@ -274,6 +285,15 @@
                                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 改善頭部循環，帶來清爽感受</li>
                                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 配合臉部撥筋，養顏美容效果更佳</li>
                             </ul>
+
+                            {/* 頭顱撥筋圖片 (新增) */}
+                            <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
+                                <img 
+                                    src="./1234.jpg" 
+                                    alt="頭顱撥筋示意圖" 
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
                         </div>
 
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mt-4">
@@ -374,7 +394,7 @@
                         <div>
                           <h4 className="font-medium text-stone-800 text-sm">營業時間</h4>
                           <p className="text-stone-600 text-sm mt-1">
-                            以預約網址顯示為主（請點選預約連結確認）。
+                            已預約網址顯示為主（請點選預約連結確認）。
                           </p>
                         </div>
                       </div>
@@ -490,4 +510,3 @@
     </script>
 </body>
 </html>
-
