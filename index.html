@@ -111,6 +111,15 @@
                         讓您在專屬的空間裡，找回平靜。
                       </p>
                     </div>
+
+                    {/* 新增：開幕慶優惠欄位 */}
+                    <div className="bg-red-50 border border-red-200 p-4 rounded-xl shadow-sm mx-2 text-center">
+                        <p className="text-red-600 font-bold text-lg tracking-wide flex justify-center items-center gap-2">
+                            <span className="animate-bounce">🎉</span> 
+                            現正開幕慶，全面55折 
+                            <span className="animate-bounce">🎉</span>
+                        </p>
+                    </div>
                     
                     {/* Tasha 介紹 (無圖片) */}
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mx-2">
@@ -264,6 +273,9 @@
                             <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
                                 <img 
                                     src="./image_4a867a.jpg" 
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                    }}
                                     alt="耳穴保健示意圖" 
                                     className="w-full h-full object-cover"
                                 />
@@ -298,10 +310,13 @@
                                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 配合臉部撥筋，養顏美容效果更佳</li>
                             </ul>
 
-                            {/* 頭顱撥筋圖片 (新增) */}
+                            {/* 頭顱撥筋圖片 */}
                             <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
                                 <img 
                                     src="./1234.jpg" 
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                    }}
                                     alt="頭顱撥筋示意圖" 
                                     className="w-full h-full object-cover"
                                 />
@@ -322,7 +337,7 @@
                         </div>
                     </div>
 
-                    {/* ================= PBM光療詳細介紹 (無圖片) ================= */}
+                    {/* ================= PBM光療詳細介紹 ================= */}
                     <div className="mt-8 pt-6 border-t border-stone-200">
                         <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">PBM光生物調節療法</h3>
                         
@@ -363,10 +378,13 @@
                                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 非侵入性、無副作用、無恢復期</li>
                             </ul>
 
-                            {/* PBM 圖片 (新增) */}
+                            {/* PBM 圖片 */}
                             <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
                                 <img 
                                     src="./4321.jpg" 
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                    }}
                                     alt="PBM光療示意圖" 
                                     className="w-full h-full object-cover"
                                 />
@@ -415,7 +433,7 @@
                         <div>
                           <h4 className="font-medium text-stone-800 text-sm">營業時間</h4>
                           <p className="text-stone-600 text-sm mt-1">
-                            已預約網址顯示為主（請點選預約連結確認）。
+                            以預約網址顯示為主（請點選預約連結確認）。
                           </p>
                         </div>
                       </div>
@@ -438,7 +456,7 @@
                       <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#B59678]">
                           <li>請準時抵達，遲到可能會影響施作時間。</li>
                           <li>請穿著寬鬆舒適的衣物。</li>
-                          <li>懷孕請勿預約。</li>
+                          <li>懷孕請先告知。</li>
                       </ul>
                     </div>
                   </div>
@@ -531,4 +549,3 @@
     </script>
 </body>
 </html>
-
