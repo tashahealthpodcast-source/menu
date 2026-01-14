@@ -8,24 +8,52 @@
     <!-- SEO Meta Tags -->
     <meta name="description" content="位於中和南勢角、東門捷運站，提供專業深層撥筋調理。體驗方案限時預約中，針對肩頸痠痛、氣結阻塞進行深層釋放。立即查看預約資訊與注意事項。">
     <meta name="keywords" content="南勢角撥筋, 東門站撥筋, 耳穴,中醫養生, 肩頸酸痛, 減重, 體重管理, 疲勞改善, 撥筋, 氣結調理, 深層放鬆">
-    <meta property="og:title" content="Tasha 撥筋耳穴調理|痠痛釋放|健康諮詢" />
-    <meta property="og:description" content="別讓痠痛累積！就在南勢角捷運站旁，專屬的一對一深層撥筋體驗，點擊查看詳情。" />
+    
+    <!-- Open Graph / 社群分享設定 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tasha 撥筋耳穴調理 | 痠痛釋放 | 健康諮詢" />
+    <meta property="og:description" content="別讓痠痛累積！就在南勢角/東門捷運站旁，專屬的一對一深層撥筋體驗，點擊查看詳情。" />
+    <!-- 建議將此圖片換成您的招牌圖或形象照 -->
+    <meta property="og:image" content="./1234.jpg" /> 
 
-    <!-- 1. 引入 Tailwind CSS (樣式庫) -->
+    <!-- 結構化資料 (Schema.org) - 讓 Google 更懂你的商店 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HealthAndBeautyBusiness",
+      "name": "塔莎健康室 Tasha's Wellness Studio",
+      "image": "./image_4a867a.jpg",
+      "description": "提供專業深層撥筋調理、耳穴保健與PBM光療服務。",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "中和區",
+        "addressRegion": "新北市",
+        "addressCountry": "TW"
+      },
+      "priceRange": "$$"
+    }
+    </script>
+
+    <!-- 1. 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. 引入 React 和 ReactDOM (核心框架) -->
+    <!-- 2. 引入 React 和 ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- 3. 引入 Babel (讓瀏覽器看懂 React 程式碼) -->
+    <!-- 3. 引入 Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <!-- 定義自訂樣式 -->
     <style>
         body {
-            background-color: #E7E5E4; /* stone-200 */
+            /* 優化電腦版背景：使用米色紋理感，不再只是死板的灰色 */
+            background-color: #f5f5dc;
+            background-image: radial-gradient(#e6e6fa 1px, transparent 1px);
+            background-size: 20px 20px;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         /* 訂製滾動條 */
         .custom-scrollbar::-webkit-scrollbar {
@@ -46,13 +74,57 @@
         .animate-fadeIn {
             animation: fadeIn 0.4s ease-out forwards;
         }
+        
+        /* 初始載入動畫樣式 */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FAF8F3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 15px;
+            transition: opacity 0.5s ease-out;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E7E5E4;
+            border-top: 4px solid #8A9A5B;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- 載入中畫面 (Loading State) -->
+    <div id="loading">
+        <div class="spinner"></div>
+        <div style="color: #8A9A5B; font-weight: bold; letter-spacing: 2px;">Tasha's Wellness</div>
+    </div>
+
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        // 當 React 元件掛載後，移除 Loading 畫面
+        const hideLoading = () => {
+            const loader = document.getElementById('loading');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 500);
+            }
+        };
+
+        const { useState, useEffect } = React;
 
         // --- 圖示組件 (SVG Icons) ---
         const Leaf = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
@@ -79,6 +151,11 @@
           const [activeTab, setActiveTab] = useState('home');
           const [expandedFaq, setExpandedFaq] = useState(null);
 
+          // 加入載入完成的效果
+          useEffect(() => {
+            hideLoading();
+          }, []);
+
           // 服務項目
           const services = [
             { name: "耳絡保養方案", time: "60 min", price: "$1,800", desc: "結合耳穴保健、頭顱撥筋、PBM光療達到良好健康促進效果。" },
@@ -100,7 +177,7 @@
               case 'home':
                 return (
                   <div className="space-y-6 animate-fadeIn">
-                    <div className="text-center space-y-3 py-4">
+                    <header className="text-center space-y-3 py-4">
                       <div className="inline-flex items-center justify-center p-3 bg-stone-100 rounded-full mb-2">
                         <Leaf className="w-8 h-8 text-[#8A9A5B]" />
                       </div>
@@ -110,24 +187,15 @@
                         這裡提供一對一的客製化身心調理，<br/>
                         讓您在專屬的空間裡，找回平靜。
                       </p>
-                    </div>
-
-                    {/* 新增：開幕慶優惠欄位 */}
-                    <div className="bg-red-50 border border-red-200 p-4 rounded-xl shadow-sm mx-2 text-center">
-                        <p className="text-red-600 font-bold text-lg tracking-wide flex justify-center items-center gap-2">
-                            <span className="animate-bounce">🎉</span> 
-                            現正開幕慶，全面55折 
-                            <span className="animate-bounce">🎉</span>
-                        </p>
-                    </div>
+                    </header>
                     
-                    {/* Tasha 介紹 (無圖片) */}
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mx-2">
+                    {/* Tasha 介紹 */}
+                    <article className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mx-2">
                         <h3 className="text-sm font-semibold text-[#8A9A5B] mb-2 border-b border-dashed pb-1">【Tasha塔莎】介紹</h3>
                         <p className="text-stone-600 text-sm leading-relaxed text-justify">
                             我是一位護理師與糖尿病衛教師，因為對健康推廣有極大熱誠，花許多時間進修營養保健、中醫養生、耳穴保健，想成為每個家庭最信任的健康夥伴。
                         </p>
-                    </div>
+                    </article>
 
                     {/* 預約連結與 LINE 聯繫 */}
                     <div className="bg-[#EFECE6] p-5 rounded-2xl mx-1 mt-6 space-y-4">
@@ -160,7 +228,7 @@
 
                       <div className="flex gap-3">
                           <a 
-                            href="https://www.instagram.com/tasha_wellness/" 
+                            href="https://www.instagram.com/tasha.health/" 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="flex-1 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-md"
@@ -170,7 +238,7 @@
                           </a>
 
                           <a 
-                            href="https://www.facebook.com/tashawellness/" 
+                            href="https://www.facebook.com/tashalohealth/" 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="flex-1 bg-[#1877F2] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#166fe5] transition-colors shadow-md"
@@ -199,7 +267,7 @@
                   <div className="space-y-4 animate-fadeIn px-1">
                     <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">SERVICE MENU</h3>
                     {services.map((item, index) => (
-                      <div key={index} className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 group hover:border-[#8A9A5B]/30 transition-all">
+                      <article key={index} className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 group hover:border-[#8A9A5B]/30 transition-all">
                         <div className="flex justify-between items-start mb-2">
                           <h4 className="font-medium text-stone-800 text-lg">{item.name}</h4>
                           <span className="text-[#8A9A5B] font-bold">
@@ -215,7 +283,7 @@
                         <p className="text-stone-600 text-sm leading-relaxed text-justify">
                           {item.desc}
                         </p>
-                      </div>
+                      </article>
                     ))}
 
                     <div className="bg-[#FAF0E6] p-5 rounded-xl border border-[#E6D0B3] mt-6 shadow-sm">
@@ -423,7 +491,7 @@
                         <div>
                           <h4 className="font-medium text-stone-800 text-sm">預約方式</h4>
                           <p className="text-stone-600 text-sm mt-1">
-                            以 <a href="https://www.facebook.com/tashawellness" target="_blank" rel="noopener noreferrer" className="text-[#8A9A5B] underline">網址預約</a> 為主，有疑問請從 IG 或 <a href="https://lin.ee/zG7bpbM" target="_blank" rel="noopener noreferrer" className="text-[#00B900] underline">官方LINE</a> 私訊。
+                            以 <a href="https://cal.com/tasha-wellness/zh" target="_blank" rel="noopener noreferrer" className="text-[#8A9A5B] underline">網址預約</a> 為主，有疑問請從 IG 或 <a href="https://lin.ee/zG7bpbM" target="_blank" rel="noopener noreferrer" className="text-[#00B900] underline">官方LINE</a> 私訊。
                           </p>
                         </div>
                       </div>
@@ -433,30 +501,19 @@
                         <div>
                           <h4 className="font-medium text-stone-800 text-sm">營業時間</h4>
                           <p className="text-stone-600 text-sm mt-1">
-                            以預約網址顯示為主（請點選預約連結確認）。
+                            以預約網址顯示為主
                           </p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20">
-                      <h3 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
-                        <Star className="w-4 h-4 fill-current" />
-                        【改期／取消政策】<span className="text-xs font-normal text-stone-500 ml-2">(試營運期間不收訂金)</span>
-                      </h3>
-                      <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#8A9A5B]">
-                        <li><strong>5天前</strong> 可免費取消。</li>
-                        <li><strong>48 小時內</strong> 可改期但不可退訂金。</li>
-                        <li><strong>24 小時內</strong> 取消或改期，只能保留一半訂金。</li>
-                      </ul>
-                    </div>
-
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
                       <h3 className="font-medium text-stone-800 mb-3 text-sm">注意事項</h3>
                       <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#B59678]">
                           <li>請準時抵達，遲到可能會影響施作時間。</li>
                           <li>請穿著寬鬆舒適的衣物。</li>
                           <li>懷孕請先告知。</li>
+                          <li>做臉部撥筋請素顏。</li>
                       </ul>
                     </div>
                   </div>
@@ -499,7 +556,7 @@
               <div className="w-full max-w-md bg-[#FAF8F3] rounded-[2rem] shadow-2xl overflow-hidden relative min-h-[700px] flex flex-col">
                 
                 {/* Header */}
-                <div className="bg-[#FAF8F3] pt-8 pb-4 px-6 sticky top-0 z-10 border-b border-stone-100/50">
+                <header className="bg-[#FAF8F3] pt-8 pb-4 px-6 sticky top-0 z-10 border-b border-stone-100/50">
                   <div className="flex justify-between items-center mb-4">
                      <div className="flex flex-col">
                         <h1 className="text-2xl font-serif text-stone-800 tracking-wide font-bold">塔莎健康室</h1>
@@ -511,7 +568,7 @@
                   </div>
                   
                   {/* Tabs */}
-                  <div className="flex bg-stone-200/50 p-1 rounded-xl overflow-x-auto whitespace-nowrap">
+                  <nav className="flex bg-stone-200/50 p-1 rounded-xl overflow-x-auto whitespace-nowrap">
                     {['home', 'booking', 'services', 'faq'].map((tab) => (
                       <button
                         key={tab}
@@ -528,13 +585,13 @@
                         {tab === 'faq' && '常見問題'}
                       </button>
                     ))}
-                  </div>
-                </div>
+                  </nav>
+                </header>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-5 pb-20 custom-scrollbar">
+                <main className="flex-1 overflow-y-auto p-5 pb-20 custom-scrollbar">
                   {renderContent()}
-                </div>
+                </main>
 
                 {/* Footer Gradient */}
                 <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#EFECE6] to-transparent h-12 pointer-events-none"></div>
@@ -549,4 +606,3 @@
     </script>
 </body>
 </html>
-
