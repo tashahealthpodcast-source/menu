@@ -156,11 +156,36 @@
             hideLoading();
           }, []);
 
-          // 服務項目
+          // 服務項目 - 依照要求更新項目與價格，並全部加上 "獨家技能" 標籤
           const services = [
-            { name: "耳絡保養方案", time: "60 min", price: "$1,800", desc: "結合耳穴保健、頭顱撥筋、PBM光療達到良好健康促進效果。" },
-            { name: "臉耳保養方案", time: "90 min", price: "$2,500", desc: "耳絡保養加上古法全顱撥筋，健康與美麗可以兼具。" },
-            { name: "窈窕方案", time: "試營運", price: "$1,000", desc: "低能量雷射集中照射腹部30分鐘、耳穴貼壓、基礎運動指導加上一週的飲食陪跑，讓你不瘦也難。" }
+            { 
+              name: "頭顱減壓耳療", 
+              time: "60 min", 
+              price: "$1,280", 
+              desc: "透過專業手法釋放頭部腦壓，搭配耳穴調理，改善睡眠品質與緩解緊繃。",
+              tag: "獨家技能" 
+            },
+            { 
+              name: "極致身心舒壓", 
+              time: "120 min", 
+              price: "$2,600", 
+              desc: "結合頭部與臉部經絡撥筋，深層釋放腦壓，同時達到提拉亮顏與助眠舒壓的雙重享受。", 
+              tag: "獨家技能" 
+            },
+            { 
+              name: "美顏拉提護理", 
+              time: "90 min", 
+              price: "$1,800", 
+              desc: "臉部經絡撥筋，提拉緊緻，恢復肌膚彈性與光澤。",
+              tag: "獨家技能" 
+            },
+            { 
+              name: "代謝與體態管理", 
+              time: "60 min", 
+              price: "$1,200", 
+              desc: "護理師客製化諮詢，搭配高端儀器與耳穴，並提供個人化飲食討論。", // 已更新描述
+              tag: "獨家技能" 
+            }
           ];
 
           // 常見問題
@@ -267,8 +292,17 @@
                   <div className="space-y-4 animate-fadeIn px-1">
                     <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">SERVICE MENU</h3>
                     {services.map((item, index) => (
-                      <article key={index} className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 group hover:border-[#8A9A5B]/30 transition-all">
-                        <div className="flex justify-between items-start mb-2">
+                      <article key={index} className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 group hover:border-[#8A9A5B]/30 transition-all relative overflow-hidden">
+                        
+                        {/* 這裡顯示獨家技能標籤 */}
+                        {item.tag && (
+                            <div className="absolute top-0 right-0 bg-[#C5A065] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg shadow-sm z-10 tracking-wider">
+                                {item.tag}
+                            </div>
+                        )}
+
+                        {/* 修改：如果有標籤，將內容往下推，避免被標籤蓋住 */}
+                        <div className={`flex justify-between items-start mb-2 ${item.tag ? 'mt-4' : ''}`}>
                           <h4 className="font-medium text-stone-800 text-lg">{item.name}</h4>
                           <span className="text-[#8A9A5B] font-bold">
                             {item.price}
@@ -342,7 +376,8 @@
                                 <img 
                                     src="./image_4a867a.jpg" 
                                     onError={(e) => {
-                                        e.target.style.display = 'none';
+                                        // 修改：當圖片載入失敗時，顯示一個帶有檔名的佔位圖片，而非隱藏
+                                        e.target.src = 'https://placehold.co/600x400?text=image_4a867a.jpg';
                                     }}
                                     alt="耳穴保健示意圖" 
                                     className="w-full h-full object-cover"
@@ -351,44 +386,60 @@
                         </div>
                     </div>
 
-                    {/* ================= 頭顱撥筋詳細介紹 ================= */}
+                    {/* ================= 撥筋介紹 (原頭顱撥筋) ================= */}
                     <div className="mt-8 pt-6 border-t border-stone-200">
-                        <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">頭顱撥筋 (Head Scraping)</h3>
+                        <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">撥筋是什麼 (What is Bojin?)</h3>
                         
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
-                            <h4 className="font-medium text-[#8A9A5B] mb-2 text-lg">什麼是頭顱撥筋？</h4>
+                            <h4 className="font-medium text-[#8A9A5B] mb-2 text-lg">深層經絡調理</h4>
                             <p className="text-stone-600 text-sm leading-relaxed text-justify mb-3">
-                                頭顱撥筋是一種傳統的中醫養生技法，透過特定的手法作用於頭部經絡穴位，幫助疏通氣血、放鬆筋膜。
-                            </p>
-                            <p className="text-stone-600 text-sm leading-relaxed text-justify">
-                                現代人長期使用3C產品、工作壓力大，容易造成頭部肌肉緊繃、氣血循環不良。頭顱撥筋能有效改善這些問題，讓您感受到深層的放鬆。
+                                撥筋是一種源自中醫的深層調理技法，不同於一般表層按摩，它能深入筋膜層，撥開沾黏的氣結，從根本疏通氣血循環。
                             </p>
                         </div>
 
+                        {/* 頭部撥筋 */}
                         <div className="bg-[#8A9A5B]/10 p-4 rounded-xl border border-[#8A9A5B]/20 mt-4">
-                            <h4 className="font-medium text-[#657342] mb-3 flex items-center gap-2">
+                            <h4 className="font-medium text-[#657342] mb-2 flex items-center gap-2">
                                 <Leaf className="w-5 h-5 fill-current" />
-                                頭顱撥筋的益處
+                                頭部撥筋：舒壓與助眠
                             </h4>
-                            <ul className="space-y-2 text-sm text-stone-700">
-                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 放鬆頭部肌肉，緩解緊繃感</li>
-                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 促進頭部氣血循環</li>
-                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 幫助舒緩壓力，提升睡眠品質</li>
-                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 改善頭部循環，帶來清爽感受</li>
-                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 配合臉部撥筋，養顏美容效果更佳</li>
+                            <p className="text-stone-700 text-sm leading-relaxed text-justify mb-2">
+                                針對現代人用腦過度、壓力大導致的失眠與頭痛。
+                            </p>
+                            <ul className="space-y-1 text-sm text-stone-700">
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 釋放深層腦壓，讓大腦徹底放鬆</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 調節自律神經，顯著改善睡眠品質</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#8A9A5B] mt-1 flex-shrink-0" /> 改善偏頭痛與頭皮緊繃</li>
                             </ul>
+                        </div>
 
-                            {/* 頭顱撥筋圖片 */}
-                            <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
-                                <img 
-                                    src="./1234.jpg" 
-                                    onError={(e) => {
-                                        e.target.style.display = 'none';
-                                    }}
-                                    alt="頭顱撥筋示意圖" 
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
+                        {/* 臉部撥筋 */}
+                        <div className="bg-[#FAF0E6] p-4 rounded-xl border border-[#E6D0B3] mt-4">
+                            <h4 className="font-medium text-[#B59678] mb-2 flex items-center gap-2">
+                                <Star className="w-5 h-5 fill-current" />
+                                臉部撥筋：養顏與美容
+                            </h4>
+                            <p className="text-stone-700 text-sm leading-relaxed text-justify mb-2">
+                                臉部是經絡匯聚之處，撥筋能啟動肌膚的自我修復力。
+                            </p>
+                            <ul className="space-y-1 text-sm text-stone-700">
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#B59678] mt-1 flex-shrink-0" /> 促進氣血循環，由內而外紅潤氣色</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#B59678] mt-1 flex-shrink-0" /> 代謝老廢物質，改善暗沉與浮腫</li>
+                                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-[#B59678] mt-1 flex-shrink-0" /> 自然拉提緊緻，淡化細紋</li>
+                            </ul>
+                        </div>
+
+                        {/* 圖片 - 繼續使用 1234.jpg */}
+                        <div className="mt-4 rounded-lg overflow-hidden shadow-sm">
+                            <img 
+                                src="./1234.jpg" 
+                                onError={(e) => {
+                                    // 修改：當圖片載入失敗時，顯示一個帶有檔名的佔位圖片，而非隱藏
+                                    e.target.src = 'https://placehold.co/600x400?text=1234.jpg';
+                                }}
+                                alt="撥筋調理示意圖" 
+                                className="w-full h-full object-cover"
+                            />
                         </div>
 
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 mt-4">
@@ -397,10 +448,10 @@
                                 適合對象
                             </h4>
                             <ul className="space-y-2 text-sm text-stone-700 list-disc list-inside marker:text-[#B59678]">
-                                <li>長期使用電腦、手機的上班族</li>
-                                <li>經常感到頭部緊繃或壓力大的人</li>
-                                <li>想要改善睡眠品質的人</li>
-                                <li>追求身心放鬆與健康養生的人</li>
+                                <li>睡眠品質差、淺眠多夢者</li>
+                                <li>長期偏頭痛、腦壓高者</li>
+                                <li>在意臉部線條下垂、氣色不佳者</li>
+                                <li>追求自然健康美容法的人</li>
                             </ul>
                         </div>
                     </div>
@@ -451,7 +502,8 @@
                                 <img 
                                     src="./4321.jpg" 
                                     onError={(e) => {
-                                        e.target.style.display = 'none';
+                                        // 修改：當圖片載入失敗時，顯示一個帶有檔名的佔位圖片，而非隱藏
+                                        e.target.src = 'https://placehold.co/600x400?text=4321.jpg';
                                     }}
                                     alt="PBM光療示意圖" 
                                     className="w-full h-full object-cover"
@@ -606,5 +658,3 @@
     </script>
 </body>
 </html>
-
-
