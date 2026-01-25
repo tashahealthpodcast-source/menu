@@ -66,6 +66,15 @@
             background-color: #d6d3cd;
             border-radius: 20px;
         }
+        /* 隱藏橫向滾動條但保留功能 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         /* 淡入動畫 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -156,6 +165,27 @@
             hideLoading();
           }, []);
 
+          // 處理 FB 連結點擊
+          const handleFacebookClick = (e) => {
+            e.preventDefault();
+            const fbWebUrl = "https://www.facebook.com/tashawellness";
+            
+            // 嘗試檢測是否在行動裝置上
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // 嘗試使用 fb:// scheme (這不是保證能成功，因為不同裝置和瀏覽器有不同安全策略)
+                // 這裡嘗試直接打開網頁版，因為在很多現代瀏覽器中，網頁版 FB 會自動詢問是否在 App 中開啟
+                // 或者，如果您知道粉絲頁 ID，可以用 fb://page/ID 或 fb://profile/ID
+                // 由於連結是 share/p/postID，較難直接轉換為通用 App Link，
+                // 最穩定的方式其實就是讓使用者點擊網頁連結，由系統或瀏覽器去處理 Deep Link
+                window.open(fbWebUrl, '_blank', 'noopener,noreferrer');
+            } else {
+                window.open(fbWebUrl, '_blank', 'noopener,noreferrer');
+            }
+          };
+
+
           // 服務項目 - 依照要求更新項目與價格，並全部加上 "獨家技能" 標籤
           const services = [
             { 
@@ -191,7 +221,7 @@
           // 常見問題
           const faqs = [
             { q: "第一次來，需要準備什麼？", a: "建議穿著寬鬆舒適的衣物，若您不確定該選擇什麼方案當天塔莎會根據您的身體狀況，客製化您的需求。" },
-            { q: "服務需要多久時間", a: "依據不同服務項目，時間從60分鐘到90分鐘不等。建議預留前後各15分鐘的緩衝時間，以確保服務品質。" },
+            { q: "服務需要多久時間", a: "依據不同服務項目，時間從60分鐘到120分鐘不等。建議預留前後各15分鐘的緩衝時間，以確保服務品質。" },
             { q: "可以使用什麼付款方式？", a: "目前接受現金、轉帳與LINE PAY。" },
             { q: "服務效果能維持多久？", a: "效果因個人體質與生活習慣而異。建議定期施做，配合專業建議調整生活作息，可達到更長期的健康維護效果。" },
             { q: "適合所有年齡層嗎？", a: "我們的服務適合18歲以上成年人，若要為未成年人預約需先私訊，當天監護人必須陪同。" }
@@ -253,7 +283,7 @@
 
                       <div className="flex gap-3">
                           <a 
-                            href="https://www.instagram.com/tasha.health/" 
+                            href="https://www.instagram.com/tasha_wellness" 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="flex-1 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-md"
@@ -263,7 +293,8 @@
                           </a>
 
                           <a 
-                            href="https://www.facebook.com/tashalohealth/" 
+                            href="https://www.facebook.com/tashawellness" 
+                            onClick={handleFacebookClick}
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="flex-1 bg-[#1877F2] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#166fe5] transition-colors shadow-md"
@@ -342,6 +373,30 @@
                                 <span className="text-[#8A9A5B] font-bold flex-shrink-0">✓</span> 轉介朋友來店消費可得300元折價卷
                             </li>
                         </ul>
+                    </div>
+
+                    {/* ================= 顧客心得區塊 (新增) ================= */}
+                    <div className="mt-8 pt-6 border-t border-stone-200">
+                        <h3 className="text-center text-stone-600 mb-4 text-sm font-medium tracking-widest">顧客心得</h3>
+                        
+                        {/* 橫向捲動容器 */}
+                        <div className="flex overflow-x-auto gap-4 pb-4 px-2 snap-x hide-scrollbar" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                            {/* 迴圈生成 3 張卡片 */}
+                            {[1, 2, 3].map((num) => (
+                                <div key={num} className="snap-center shrink-0 w-[85%] sm:w-64 rounded-xl overflow-hidden shadow-md border border-stone-100 bg-white">
+                                    <img 
+                                        src={`./review_0${num}.jpg`} 
+                                        alt={`顧客心得 ${num}`}
+                                        className="w-full h-auto object-cover"
+                                        onError={(e) => {
+                                            // 錯誤處理：若找不到圖片，顯示 placeholder
+                                            e.target.src = `https://placehold.co/400x600/FAF8F3/8A9A5B?text=Review+0${num}`;
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <p className="text-center text-xs text-stone-400 mt-2">左右滑動查看更多好評</p>
                     </div>
 
                     {/* ================= 耳穴保健詳細介紹 ================= */}
