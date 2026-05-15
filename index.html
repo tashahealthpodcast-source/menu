@@ -78,6 +78,8 @@
         const GlobeIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
         const Activity = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
         const Target = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+        const ChevronDown = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m6 9 6 6 6-6"/></svg>;
+        const ChevronUp = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m18 15-6-6-6 6"/></svg>;
         const LineIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M11.96 2A10 10 0 0 0 2 12c0 5.52 4.48 10 10 10a9.92 9.92 0 0 0 5.6-1.74l3.59 1.48c.55.23 1.15-.22 1.15-.8v-4.66A9.92 9.92 0 0 0 22 12c0-5.52-4.48-10-10-10zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/><circle cx="12" cy="11.96" r="4"/></svg>;
         const InstagramIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
         const FacebookIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
@@ -134,7 +136,7 @@
                       <article className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-stone-100 mx-2">
                           <h3 className="text-sm md:text-base font-semibold text-[#8A9A5B] mb-2 border-b border-dashed pb-1">【Tasha塔莎】介紹</h3>
                           <p className="text-stone-600 text-sm md:text-base leading-relaxed text-justify">
-                              我是一位護理師與糖尿病衛教師，對健康推廣有極大熱誠，進修營養保健、中醫養生、耳穴保健，想成為每個家庭最信任的健康夥伴。
+                              我是一位護理師與糖尿病衛教師，對健康推廣有極大熱誠，進修營養保健、中醫養生、耳穴保健，目前是功能醫學診所護理師，想成為每個家庭最信任的健康夥伴。
                           </p>
                       </article>
 
@@ -157,7 +159,7 @@
                               <InstagramIcon className="w-4 h-4" />Instagram
                             </a>
                             <a href="https://www.facebook.com/tashawellness" onClick={handleFacebookClick} target="_blank" rel="noopener noreferrer"
-                               className="flex-1 bg-[#1877F2] text-white py-3 rounded-lg font-medium text-sm md:text-base flex items-center justify-center gap-2 hover:bg-[#166fe5] shadow-md">
+                               className="flex-1 bg-[#1877F2] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#166fe5] shadow-md">
                               <FacebookIcon className="w-4 h-4 fill-white" />Facebook
                             </a>
                         </div>
@@ -257,7 +259,7 @@
                             <h3 className="text-stone-600 mb-4 text-sm font-medium tracking-widest uppercase lg:mt-0 mt-6">&nbsp;</h3>
                             <div className="bg-white p-5 rounded-xl border border-stone-100 shadow-sm h-full">
                                 <h4 className="font-medium text-[#8A9A5B] mb-2">PBM 光生物調節</h4>
-                                <p className="text-stone-600 text-sm leading-relaxed">利用特定波長光線促進細胞能量（ATP）產生。幫助新陳代謝、體態管理並舒緩肌肉緊繃。</p>
+                                <p className="text-stone-600 text-sm leading-relaxed">利用特定波長光線促進細胞能量（ATP）產生。幫助新陳代謝、體態管理並舒緩肌肉緊繃環境。</p>
                                 <div className="mt-4 rounded-lg overflow-hidden"><img src="./4321.jpg" className="w-full h-48 object-cover" onError={(e)=>e.target.src='https://placehold.co/600x400?text=4321.jpg'} /></div>
                             </div>
                         </div>
